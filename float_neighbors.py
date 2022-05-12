@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
 # Author: Teun Mathijssen (https://github.com/teuncm)
-# Description: Retrieve direct neighbors of 16, 32, 64 and 128-bit floats.
-# Example: python3 float_neighbors.py 7.2 -p 16 -n 25 -e ">" | less
+# Description: View all direct bitwise neighbors of arbitrary float values.
+# Example: python float_neighbors.py 7.2 -p 16 -n 25 -e ">" | less
 
 import argparse
 import numpy as np
@@ -80,6 +80,6 @@ if __name__ == '__main__':
     parser.add_argument('-n', metavar='neighbors', type=int, default=5, 
         help='Number of neighbors. Default: 5.')
     parser.add_argument('-e', metavar='endianness', type=str, default='>', 
-        help='Endianness. Any of {"=", "<", ">"}. Default: ">" (big-endian).')
+        help='Endianness. Any of {"<", ">", "="}. Default: ">" (big-endian).')
 
     main(parser.parse_args())
