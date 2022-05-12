@@ -38,7 +38,7 @@ Python floats are internally 64 bits long and use machine-default endianness. By
 
 A custom NumPy float datatype could for example be `np.dtype('>f4")` where `>` indicates big-endianness, `f` indicates float storage and `4` indicates that 2 bytes are used for storage.
 
-Obtaining the bitwise next float is not trivial. Luckily, `np.nextafter/0` is implemented in the NumPy specification, which returns the direct next possible float neighbor (towards `np.NINF` and `np.PINF`) and handles all edge cases.
+Obtaining the bitwise next float is not trivial. Luckily, `np.nextafter/2` is implemented in the NumPy specification, which returns the direct next possible float neighbor (towards `np.NINF` and `np.PINF`) and handles all edge cases.
 
 The infinity values used for retrieving neighbors have to be treated with special care: they are put in an array with the custom dtype and subsequently retrieved to maintain precision and byte order.
 
