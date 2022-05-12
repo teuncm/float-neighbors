@@ -1,5 +1,5 @@
 ## Float neighbor exploration
-View all direct bitwise neighbors of arbitrary float values. This program can be used as educational tool to delve deep into float rounding errors and explore the properties and limits of IEEE floats.
+Explore direct neighbors and limits of IEEE floating-point values. This program can be used as educational tool to delve deep into float rounding errors, epsilons and explore the properties and limits of IEEE floats.
 
 ### Configurable options
 - Precision: 16-bit, 32-bit, 64-bit, 128-bit*
@@ -33,12 +33,12 @@ View all direct bitwise neighbors of arbitrary float values. This program can be
        2 | 0x4002     | 2.004
 ```
 
-### Technical details and challenges
+### Technical details and design challenges
 Python floats are internally 64 bits long and use machine-default endianness. By only using NumPy arrays for data, we circumvent any internal Python conversions. Furthermore, we are now able to leverage custom NumPy datatypes.
 
-A custom NumPy float datatype could for example be `np.dtype('>f4")` where `>` indicates big-endianness, `f` indicates float storage and `4` indicates that 2 bytes are used for storage.
+A custom NumPy float datatype could for example be `np.dtype('>f4')` where `>` indicates big-endianness, `f` indicates float storage and `4` indicates that 2 bytes are used for storage.
 
-Obtaining the bitwise next float is not trivial. Luckily, `np.nextafter/2` is implemented in the NumPy specification, which returns the direct next possible float neighbor (towards `np.NINF` and `np.PINF`) and handles all edge cases.
+Obtaining the next closest numerical float value is not trivial. Fortunately, `np.nextafter/2` is implemented in the NumPy specification, which returns the direct next possible float neighbor (towards `np.NINF` and `np.PINF`) and handles all edge cases.
 
 The infinity values used for retrieving neighbors have to be treated with special care: they are put in an array with the custom dtype and subsequently retrieved to maintain precision and byte order.
 

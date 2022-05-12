@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Teun Mathijssen (https://github.com/teuncm)
-# Description: View all direct bitwise neighbors of arbitrary float values.
-# Example: python float_neighbors.py 7.2 -p 16 -n 25 -e ">" | less
+# Description: Explore direct neighbors and limits of IEEE floating-point values.
 
 import argparse
 import numpy as np
