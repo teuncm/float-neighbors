@@ -1,5 +1,5 @@
 ## Float neighbor exploration
-View all direct bitwise neighbors of arbitrary float values. This program can be used as educational tool to delve deep into float rounding errors and the properties and limits of IEEE floats.
+View all direct bitwise neighbors of arbitrary float values. This program can be used as educational tool to delve deep into float rounding errors and explore the properties and limits of IEEE floats.
 
 ### Configurable options
 - Precision: 16-bit, 32-bit, 64-bit, 128-bit*
@@ -17,6 +17,20 @@ View all direct bitwise neighbors of arbitrary float values. This program can be
 ```
 ```bash
 ./float_neighbors.py 0
+```
+
+### Example output
+```bash
+./float_neighbors.py 2 -p 16 -n 2
+```
+
+```
+  Offset | Hex value  | Numerical value
+      -2 | 0x3ffe     | 1.998
+      -1 | 0x3fff     | 1.999
+       0 | 0x4000     | 2.0
+       1 | 0x4001     | 2.002
+       2 | 0x4002     | 2.004
 ```
 
 ### Technical details and challenges
