@@ -10,16 +10,31 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
 
 ### Example usage
 ```bash
-./float_neighbors.py 7.2 -p 16 -n 25 -e ">" | less
-```
-```bash
-./float_neighbors.py " -inf" -p 32 -e "<"
-```
-```bash
-./float_neighbors.py 0
+./float_neighbors.py 0x0000 -p 16 -e "<" -n 2
 ```
 
-### Example output
+```
+  Offset | Hex value  | Numerical value
+      -2 | 0x0280     | -1e-07
+      -1 | 0x0180     | -6e-08
+       0 | 0x0000     | 0.0
+      +1 | 0x0100     | 6e-08
+      +2 | 0x0200     | 1e-07
+```
+
+```bash
+./float_neighbors.py " -inf" -p 32 -n 2
+```
+
+```
+  Offset | Hex value  | Numerical value
+      -2 | 0xff800000 | -inf
+      -1 | 0xff800000 | -inf
+       0 | 0xff800000 | -inf
+      +1 | 0xff7fffff | -3.4028235e+38
+      +2 | 0xff7ffffe | -3.4028233e+38
+```
+
 ```bash
 ./float_neighbors.py 2 -p 16 -n 2
 ```
@@ -29,8 +44,8 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
       -2 | 0x3ffe     | 1.998
       -1 | 0x3fff     | 1.999
        0 | 0x4000     | 2.0
-       1 | 0x4001     | 2.002
-       2 | 0x4002     | 2.004
+      +1 | 0x4001     | 2.002
+      +2 | 0x4002     | 2.004
 ```
 
 ### Technical details and design challenges
