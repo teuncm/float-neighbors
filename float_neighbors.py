@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# Author: Teun Mathijssen (https://github.com/teuncm)
+# Author: Teun Mathijssen
+# URL: https://github.com/teuncm/float-neighbors
 # Description: Explore direct neighbors and limits of IEEE floating-point values.
 
 import argparse
@@ -56,9 +57,9 @@ def main(args):
     # Retrieve machine info for this custom dtype.
     finfo = np.finfo(my_dtype)
 
-    # Always stay within NumPy array interface to maintain endianness
-    # and precision. These get lost in Python float handling.
+    # Convert to NumPy array to maintain endianness and precision.
     if args.number[:2] == '0x':
+        # Hex conversion is not supported, hence we create our own.
         float_arr = from_hex(args.number, my_dtype)
     else:
         float_arr = np.array([args.number], my_dtype)
