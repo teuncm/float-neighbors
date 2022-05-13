@@ -10,20 +10,29 @@ import numpy as np
 def from_hex(hex, my_dtype):
     """Convert hexadecimal representation to NumPy float array."""
     binary = bytes.fromhex(hex[2:])
-    return np.frombuffer(binary, dtype=my_dtype)
+    float_arr = np.array(np.frombuffer(binary, dtype=my_dtype))
+    float_arr.setflags(write=True)
+
+    return float_arr
 
 def to_hex(float_arr):
     """Convert NumPy float array to hexadecimal representation."""
     return f'0x{float_arr.tobytes().hex()}'
 
-def print_table(args, before_arr, float_arr, after_arr, finfo):
-    """Print neighbor table."""
-    # Adjust hex table size.
-    hex_table_size = 10
-    if args.p == 128:
-        hex_table_size = 34
+def get_hex_col_width(args):
+    """Get hex column width for printing."""
+    hex_col_width = 10
+
     if args.p == 64:
-        hex_table_size = 18
+        hex_col_width = 18
+    if args.p == 128:
+        hex_col_width = 34
+
+    return hex_col_width
+
+def print_table_header(args, finfo):
+    """Print neighbor table header."""
+    hex_col_width = get_hex_col_width(args)
 
     # Print table header.
     print(f'Analyzing float neighbors for input "{args.number}"')
@@ -31,26 +40,28 @@ def print_table(args, before_arr, float_arr, after_arr, finfo):
     print(f'Data: {args.p}-bit precision, {args.n} neighbors, "{args.e}" endianness')
     print(f'Bits: 1 (sign), {finfo.nexp} (exponent), {finfo.nmant} (fraction)')
     print()
-    print(f'{"Offset":>8} | {"Hex value":<{hex_table_size}} | {"Numerical value"}')
+    print(f'{"Offset":>9} | {"Hex value":<{hex_col_width}} | {"Numerical value"}')
 
-    # Print downwards neighbors.
-    for i in reversed(range(args.n)):
-        before_hex = to_hex(before_arr[i:i+1])
-        print(f'{-(i+1):>8} | {before_hex:<{hex_table_size}} | ', end='')
-        print(before_arr[i])
+def print_table(args, float_arr, iter_start, NINF):
+    """Print neighbor table."""
+    hex_col_width = get_hex_col_width(args)
 
-    # Print float itself.
-    float_hex = to_hex(float_arr)
-    print(f'{"0":>8} | {float_hex:<{hex_table_size}} | ', end='')
-    print(float_arr[0])
+    # Walk downwards.
+    for i in range(iter_start, -args.n - 1, -1):
+        after_hex = to_hex(float_arr)
+        print(f'{i:>+9} | {after_hex:<{hex_col_width}} | ', end='')
+        print(float_arr[0])
 
-    # Print upwards neighbors.
-    for i in range(args.n):
-        after_hex = to_hex(after_arr[i:i+1])
-        print(f'{i+1:>+8} | {after_hex:<{hex_table_size}} | ', end='')
-        print(after_arr[i])
+        if np.equal(float_arr[0], NINF):
+            # If we hit -inf, we stop here.
+            break
+
+        float_arr[0] = np.nextafter(float_arr[0], NINF)
 
 def main(args):
+    # Overflow errors can occur.
+    np.seterr(over='ignore')
+
     # Create custom dtype. C will use this under the hood.
     my_dtype = np.dtype(f'{args.e}f{args.p//8}')
 
@@ -59,28 +70,28 @@ def main(args):
 
     # Convert to NumPy array to maintain endianness and precision.
     if args.number[:2] == '0x':
-        # Hex conversion is not supported, hence we create our own.
+        # Hex conversion is not directly supported in NumPy.
         float_arr = from_hex(args.number, my_dtype)
     else:
         float_arr = np.array([args.number], my_dtype)
 
-    # Walk downwards.
-    before_arr = np.full(args.n, float_arr[0], my_dtype)
+    # Cache infinity values.
+    PINF = np.array([np.PINF], my_dtype)[0]
     NINF = np.array([np.NINF], my_dtype)[0]
-    for i in range(args.n):
-        if i != 0:
-            before_arr[i] = before_arr[i-1]
-        before_arr[i] = np.nextafter(before_arr[i], NINF)
+
+    iter_start = args.n
 
     # Walk upwards.
-    after_arr = np.full(args.n, float_arr[0], my_dtype)
-    PINF = np.array([np.PINF], my_dtype)[0]
     for i in range(args.n):
-        if i != 0:
-            after_arr[i] = after_arr[i-1]
-        after_arr[i] = np.nextafter(after_arr[i], PINF)
+        if np.equal(float_arr[0], PINF):
+            # If we hit +inf, we will start from here.
+            iter_start = i
+            break
 
-    print_table(args, before_arr, float_arr, after_arr, finfo)
+        float_arr[0] = np.nextafter(float_arr[0], PINF)
+
+    print_table_header(args, finfo)
+    print_table(args, float_arr, iter_start, NINF)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

@@ -11,32 +11,30 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
 ### Example usage
 `./float_neighbors.py 0x0000 -p 16 -e "<" -n 2`
 ```
-  Offset | Hex value  | Numerical value
-      -2 | 0x0280     | -1e-07
-      -1 | 0x0180     | -6e-08
-       0 | 0x0000     | 0.0
-      +1 | 0x0100     | 6e-08
-      +2 | 0x0200     | 1e-07
+   Offset | Hex value  | Numerical value
+       +2 | 0x0200     | 1e-07
+       +1 | 0x0100     | 6e-08
+       +0 | 0x0000     | 0.0
+       -1 | 0x0180     | -6e-08
+       -2 | 0x0280     | -1e-07
 ```
 
 `./float_neighbors.py " -inf" -p 32 -n 2`
 ```
-  Offset | Hex value  | Numerical value
-      -2 | 0xff800000 | -inf
-      -1 | 0xff800000 | -inf
-       0 | 0xff800000 | -inf
-      +1 | 0xff7fffff | -3.4028235e+38
-      +2 | 0xff7ffffe | -3.4028233e+38
+   Offset | Hex value  | Numerical value
+       +2 | 0xff7ffffe | -3.4028233e+38
+       +1 | 0xff7fffff | -3.4028235e+38
+       +0 | 0xff800000 | -inf
 ```
 
 `./float_neighbors.py 2 -p 16 -n 2`
 ```
-  Offset | Hex value  | Numerical value
-      -2 | 0x3ffe     | 1.998
-      -1 | 0x3fff     | 1.999
-       0 | 0x4000     | 2.0
-      +1 | 0x4001     | 2.002
-      +2 | 0x4002     | 2.004
+   Offset | Hex value  | Numerical value
+       +2 | 0x4002     | 2.004
+       +1 | 0x4001     | 2.002
+       +0 | 0x4000     | 2.0
+       -1 | 0x3fff     | 1.999
+       -2 | 0x3ffe     | 1.998
 ```
 
 ### Technical details and design challenges
@@ -49,6 +47,8 @@ Obtaining the next closest numerical float value is not trivial. Fortunately, `n
 The infinity values used for retrieving neighbors have to be treated with special care: they are put in an array with the custom dtype and subsequently retrieved to maintain precision and byte order.
 
 Runtime complexity of the program is `O(n)` as the previous float is always used to calculate the next float.
+
+Memory complexity of the program is `O(1)` as the program initially walks up and subsequently walks down to calculate and display all the floats one by one in descending order.
 
 Converting a float into its hex representation is not trivial. Luckily, NumPy provides a method to convert an entire NumPy array to a bytes object: `tobytes/0`. We use this method on a NumPy array containing a single float and then use Python's `hex/0` to convert it into hex format.
 
