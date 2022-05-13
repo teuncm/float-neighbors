@@ -9,10 +9,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
 *: machine-dependent
 
 ### Example usage
-```bash
-./float_neighbors.py 0x0000 -p 16 -e "<" -n 2
-```
-
+`./float_neighbors.py 0x0000 -p 16 -e "<" -n 2`
 ```
   Offset | Hex value  | Numerical value
       -2 | 0x0280     | -1e-07
@@ -22,10 +19,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
       +2 | 0x0200     | 1e-07
 ```
 
-```bash
-./float_neighbors.py " -inf" -p 32 -n 2
-```
-
+`./float_neighbors.py " -inf" -p 32 -n 2`
 ```
   Offset | Hex value  | Numerical value
       -2 | 0xff800000 | -inf
@@ -35,10 +29,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
       +2 | 0xff7ffffe | -3.4028233e+38
 ```
 
-```bash
-./float_neighbors.py 2 -p 16 -n 2
-```
-
+`./float_neighbors.py 2 -p 16 -n 2`
 ```
   Offset | Hex value  | Numerical value
       -2 | 0x3ffe     | 1.998
