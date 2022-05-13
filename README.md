@@ -52,6 +52,8 @@ Runtime complexity of the program is `O(n)` as the previous float is always used
 
 Converting a float into its hex representation is not trivial. Luckily, NumPy provides a method to convert an entire NumPy array to a bytes object: `tobytes/0`. We use this method on a NumPy array containing a single float and then use Python's `hex/0` to convert it into hex format.
 
+Converting a hex representation into a float is done in two steps. We can simply use `bytes.fromhex/1` to obtain the bytes representation and then rebuild the (1-element) float array using `np.frombuffer/2` with our custom dtype.
+
 Printing a 128-bit float directly within an f-string is not possible: internally Python will convert the number to a 64-bit float. Hence the print statements for the numerical values are on separate lines: this will circumvent conversion and properly print the float to its full precision.
 
 #### Summary
