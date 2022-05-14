@@ -10,8 +10,7 @@ import numpy as np
 def from_hex(hex, my_dtype):
     """Convert hexadecimal representation to NumPy float array."""
     binary = bytes.fromhex(hex[2:])
-    float_arr = np.array(np.frombuffer(binary, dtype=my_dtype))
-    float_arr.setflags(write=True)
+    float_arr = np.frombuffer(binary, dtype=my_dtype).copy()
 
     return float_arr
 
@@ -46,20 +45,21 @@ def print_table(args, float_arr, iter_start, NINF):
     """Print neighbor table."""
     hex_col_width = get_hex_col_width(args)
 
-    # Walk downwards.
-    for i in range(iter_start, -args.n - 1, -1):
-        after_hex = to_hex(float_arr)
-        print(f'{i:>+9} | {after_hex:<{hex_col_width}} | ', end='')
+    for i in range(iter_start, -(args.n + 1), -1):
+        # Print float and its hex value.
+        float_hex = to_hex(float_arr)
+        print(f'{i:>+9} | {float_hex:<{hex_col_width}} | ', end='')
         print(float_arr[0])
 
         if np.equal(float_arr[0], NINF):
             # If we hit -inf, we stop here.
             break
 
+        # Walk downwards.
         float_arr[0] = np.nextafter(float_arr[0], NINF)
 
 def main(args):
-    # Overflow errors can occur.
+    # Overflow errors will not impact accuracy.
     np.seterr(over='ignore')
 
     # Create custom dtype. C will use this under the hood.
@@ -81,13 +81,13 @@ def main(args):
 
     iter_start = args.n
 
-    # Walk upwards.
     for i in range(args.n):
         if np.equal(float_arr[0], PINF):
             # If we hit +inf, we will start from here.
             iter_start = i
             break
 
+        # Walk upwards.
         float_arr[0] = np.nextafter(float_arr[0], PINF)
 
     print_table_header(args, finfo)
