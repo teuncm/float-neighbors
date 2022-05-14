@@ -10,7 +10,7 @@ import numpy as np
 def from_hex(hex, my_dtype):
     """Convert hexadecimal representation to NumPy float array."""
     binary = bytes.fromhex(hex[2:])
-    float_arr = np.frombuffer(binary, dtype=my_dtype).copy()
+    float_arr = np.frombuffer(binary, dtype=my_dtype, count=1).copy()
 
     return float_arr
 
