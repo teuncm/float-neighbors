@@ -6,10 +6,10 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
 - Number of neighbors
 - Endianness: little-endian, big-endian, machine-default
 
-*: machine-dependent
+*: [machine-dependent](https://numpy.org/doc/stable/user/basics.types.html#extended-precision) (usually padded or unavailable)
 
 ### Example usage
-`./float_neighbors.py 0x0000 -p 16 -e "<" -n 2`
+`python float_neighbors.py 0x0000 -p 16 -e "<" -n 2`
 ```
    Offset | Hex value  | Numerical value
        +2 | 0x0200     | 1e-07
@@ -19,7 +19,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
        -2 | 0x0280     | -1e-07
 ```
 
-`./float_neighbors.py " -inf" -p 32 -n 2`
+`python float_neighbors.py " -inf" -p 32 -n 2`
 ```
    Offset | Hex value  | Numerical value
        +2 | 0xff7ffffe | -3.4028233e+38
@@ -27,7 +27,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
        +0 | 0xff800000 | -inf
 ```
 
-`./float_neighbors.py 2 -p 16 -n 2`
+`python float_neighbors.py 2 -p 16 -n 2`
 ```
    Offset | Hex value  | Numerical value
        +2 | 0x4002     | 2.004
@@ -38,7 +38,7 @@ Explore direct neighbors and limits of IEEE floating-point values. This program 
 ```
 
 ### Technical details and design challenges
-Python floats are internally 64 bits long and use machine-default endianness. By only using NumPy arrays for data, we circumvent any internal Python conversions. Furthermore, we are now able to leverage custom NumPy datatypes.
+Python floats are internally 64 bits in size and use machine-default endianness. By only using NumPy arrays for data, we circumvent any internal Python conversions. Furthermore, we are now able to leverage custom NumPy datatypes.
 
 A custom NumPy float datatype could for example be `np.dtype('>f4')` where `>` indicates big-endianness, `f` indicates float storage and `4` indicates that 2 bytes are used for storage.
 
